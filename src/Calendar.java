@@ -25,12 +25,14 @@ public class Calendar {
     public List<LocalTime[]> getPossibleMeetingTime(Duration duration){
         List<LocalTime[]> result = new ArrayList<>();
         meetings.sort(Comparator.comparing(m -> m.startTime));
+        if(Duration.between(workStart, meetings.get(0).startTime).compareTo(duration)>0)
+            result.add(new LocalTime[]{workStart, meetings.get(0).startTime});
         for(int i = 0; i<meetings.size()-1; i++){
             if(Duration.between(meetings.get(i).endTime, meetings.get(i+1).startTime).compareTo(duration)>0){
                 result.add(new LocalTime[]{meetings.get(i).endTime, meetings.get(i + 1).startTime});
             }
         }
-        if(meetings.get(meetings.size()-1).endTime.isBefore(workEnd))       //if the last meeting ends before workEnd
+        if(Duration.between(meetings.get(meetings.size()-1).endTime, workEnd).compareTo(duration)>0)       //if the last meeting ends before workEnd
             result.add(new LocalTime[]{meetings.get(meetings.size()-1).endTime, workEnd});
         return result;
     }
