@@ -12,6 +12,11 @@ public class Meeting {
         this.duration = duration;
         endTime = startTime.plus(duration);
     }
+    public Meeting(LocalTime startTime, LocalTime endTime){
+        this.startTime = startTime;
+        this.duration = Duration.between(startTime,endTime);
+        this.endTime = endTime;
+    }
     public String toString(){
         StringBuilder sb = new StringBuilder();
         sb.

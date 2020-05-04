@@ -3,6 +3,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 
 public class Calendar {
@@ -34,17 +35,32 @@ public class Calendar {
         return result;
     }
 
+    public boolean isEventPossible(Meeting event){
+        AtomicBoolean isOk = new AtomicBoolean(true);
+        meetings.forEach(m -> {
+            if(event.startTime.isAfter(m.startTime) && event.startTime.isBefore(m.endTime) ||
+               event.endTime.isAfter(m.startTime) && event.endTime.isBefore(m.endTime)){            //either start of the event is during another event or its end is
+                isOk.set(false);
+            }
+        });
+        return isOk.get();
+    }
     public boolean addEvent(LocalTime startTime, Duration duration){
-
-        return true;
+        Meeting tmp = new Meeting(startTime, duration);
+        if(isEventPossible(tmp))
+            return meetings.add(tmp);
+        return false;
     }
     public boolean addEvent(LocalTime startTime, LocalTime endTime){
-
-        return true;
+        Meeting tmp = new Meeting(startTime, endTime);
+        if(isEventPossible(tmp))
+            return meetings.add(tmp);
+        return false;
     }
     public boolean addEvent(Meeting meeting){
-
-        return meetings.add(meeting);
+        if(isEventPossible(meeting))
+            return meetings.add(meeting);
+        return false;
     }
 
 }
