@@ -5,6 +5,8 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args){
+
+        // Creating calendars and adding meetings to each calendar (two of them aren't suppose to be possible to be added)
         Calendar calendar1 = new Calendar();
         Calendar calendar2 = new Calendar(LocalTime.of(12, 00), LocalTime.of(20, 00));
         calendar1.addEvent(new Meeting(LocalTime.of(9,15), Duration.ofMinutes(60)));
@@ -33,10 +35,14 @@ public class Main {
 
     public static List<LocalTime[]> getMeetingTime(Calendar calendar1, Calendar calendar2, Duration duration){
         List<LocalTime[]> result = new ArrayList<>();
+        // possibleStart and possibleEnde describes time in which either of two people is at work
         LocalTime possibleStart = calendar1.workStart.compareTo(calendar2.workStart) > 0 ? calendar2.workStart : calendar1.workStart;
         LocalTime possibleEnd = calendar1.workEnd.compareTo(calendar2.workEnd) > 0 ? calendar1.workEnd : calendar2.workEnd;
-        // above variables are time in either is at work
 
+        // creating arrays containg time schedule of each calendar
+        // 0 in the array means worker is busy and cannot have meeting in that particular minute
+        // 1 in the array means worker is not busy and can have another meeting in that minute
+        // common will be used to find period in which both workers are free
         int[] time1 = new int[(int)Duration.between(possibleStart,possibleEnd).toMinutes()];
         int[] time2 = new int[time1.length];
         int[] common = new int[time1.length];
@@ -46,6 +52,7 @@ public class Main {
         List<LocalTime[]> freeTime2 = calendar2.getPossibleMeetingTime(duration);
 
         for(int i = 0; i<freeTime1.size(); i++){
+            //new start and new end are beginnngs and endings of the freeTime1,2 elements minus time from midnight to possibleStart
             LocalTime newStart = freeTime1.get(i)[0].minus(Duration.ofMinutes(possibleStart.getHour()*60+possibleStart.getMinute()));
             LocalTime newEnd = freeTime1.get(i)[1].minus(Duration.ofMinutes(possibleStart.getHour()*60+possibleStart.getMinute()));
             int start = newStart.getHour()*60 + newStart.getMinute();
