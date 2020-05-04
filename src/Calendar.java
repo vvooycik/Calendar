@@ -1,13 +1,14 @@
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
+
 
 public class Calendar {
     LocalTime workStart;
     LocalTime workEnd;
-    List<Meeting> meetings;
+    private List<Meeting> meetings;
 
     public Calendar(){
         workStart = LocalTime.of(9,0);
@@ -20,23 +21,30 @@ public class Calendar {
         meetings = new ArrayList<>();
     }
 
-    public boolean tryNewEvent(LocalTime start, Duration duration){
-        if(start.isAfter(workStart) && start.plus(duration).isBefore(workEnd)){
-            AtomicBoolean isOk = new AtomicBoolean(true);
-            meetings.forEach(m -> {
-                if((start.isAfter(m.startTime) && start.isBefore(m.startTime.plus(m.duration))) ||
-                    start.plus(duration).isAfter(m.startTime) && start.plus(duration).isBefore(m.startTime.plus(m.duration))){
-                    isOk.set(false);
-                }
-            });
-            return isOk.get();
+    public List<LocalTime[]> getPossibleStartTimes(Duration duration){
+        List<LocalTime[]> result = new ArrayList<>();
+        meetings.sort(Comparator.comparing(m -> m.startTime));
+        for(int i = 0; i<meetings.size()-1; i++){
+            if(Duration.between(meetings.get(i).endTime, meetings.get(i+1).startTime).compareTo(duration)>0){
+                result.add(new LocalTime[]{meetings.get(i).endTime, meetings.get(i + 1).startTime});
+            }
         }
-        else
-            return false;
+        if(meetings.get(meetings.size()-1).endTime.isBefore(workEnd))       //if the last meeting ends before workEnd
+            result.add(new LocalTime[]{meetings.get(meetings.size()-1).endTime, workEnd});
+        return result;
     }
 
-    public void addEvent(Meeting meeting){
-        meetings.add(meeting);
+    public boolean addEvent(LocalTime startTime, Duration duration){
+
+        return true;
+    }
+    public boolean addEvent(LocalTime startTime, LocalTime endTime){
+
+        return true;
+    }
+    public boolean addEvent(Meeting meeting){
+
+        return meetings.add(meeting);
     }
 
 }

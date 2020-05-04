@@ -5,10 +5,12 @@ import java.time.format.DateTimeFormatter;
 public class Meeting {
     LocalTime startTime;
     Duration duration;
+    LocalTime endTime;
 
     public Meeting(LocalTime startTime, Duration duration){
         this.startTime = startTime;
         this.duration = duration;
+        endTime = startTime.plus(duration);
     }
     public String toString(){
         StringBuilder sb = new StringBuilder();
