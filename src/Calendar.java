@@ -22,7 +22,7 @@ public class Calendar {
         meetings = new ArrayList<>();
     }
 
-    public List<LocalTime[]> getPossibleStartTimes(Duration duration){
+    public List<LocalTime[]> getPossibleMeetingTime(Duration duration){
         List<LocalTime[]> result = new ArrayList<>();
         meetings.sort(Comparator.comparing(m -> m.startTime));
         for(int i = 0; i<meetings.size()-1; i++){
@@ -38,8 +38,16 @@ public class Calendar {
     public boolean isEventPossible(Meeting event){
         AtomicBoolean isOk = new AtomicBoolean(true);
         meetings.forEach(m -> {
-            if(event.startTime.isAfter(m.startTime) && event.startTime.isBefore(m.endTime) ||
-               event.endTime.isAfter(m.startTime) && event.endTime.isBefore(m.endTime)){            //either start of the event is during another event or its end is
+            if(
+                    (
+                            (event.startTime.isAfter(m.startTime) || event.startTime.equals(m.startTime)) &&
+                            (event.startTime.isBefore(m.endTime))
+                    ) ||
+                    (
+                            (event.endTime.isAfter(m.startTime)) &&
+                            (event.endTime.isBefore(m.endTime) || event.endTime.equals(m.endTime))
+                    )
+            ){//either start of the event is during another event or its end is
                 isOk.set(false);
             }
         });
@@ -61,6 +69,12 @@ public class Calendar {
         if(isEventPossible(meeting))
             return meetings.add(meeting);
         return false;
+    }
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("Work hours: ").append(workStart).append(" - ").append(workEnd).append("\n");
+        meetings.forEach(m -> sb.append(m.toString()));
+        return sb.toString();
     }
 
 }

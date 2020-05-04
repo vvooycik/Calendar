@@ -21,10 +21,11 @@ public class Meeting {
         StringBuilder sb = new StringBuilder();
         sb.
                 append("start: \"").
-                append(DateTimeFormatter.ofPattern("hh:mm").format(startTime)).
+                append(DateTimeFormatter.ofPattern("HH:mm").format(startTime)).
                 append("\"\n").
                 append("end: \"").
-                append(DateTimeFormatter.ofPattern("hh:mm").format(startTime.plus(duration)));
+                append(DateTimeFormatter.ofPattern("HH:mm").format(startTime.plus(duration))).
+                append("\n\n");
         return sb.toString();
     }
 

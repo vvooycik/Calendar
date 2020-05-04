@@ -1,13 +1,22 @@
 import java.time.Duration;
 import java.time.LocalTime;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args){
-        Calendar person1 = new Calendar();
-        Calendar person2 = new Calendar(LocalTime.of(12, 00), LocalTime.of(20, 00));
-        person1.addEvent(new Meeting(LocalTime.of(10,00), Duration.ofMinutes(60)));
-        person2.addEvent(new Meeting(LocalTime.of(12, 00), Duration.ofMinutes(60)));
+        Calendar calendar1 = new Calendar();
+        Calendar calendar2 = new Calendar(LocalTime.of(12, 00), LocalTime.of(20, 00));
+        calendar1.addEvent(new Meeting(LocalTime.of(10,00), Duration.ofMinutes(60)));
+        calendar1.addEvent(new Meeting(LocalTime.of(10,00), Duration.ofMinutes(60))); // shouldn't be added
+        calendar2.addEvent(new Meeting(LocalTime.of(12, 00), Duration.ofMinutes(60)));
 
-        Meeting test1 =
+        System.out.println(calendar1);
+        System.out.println(calendar2);
+
+
     }
+
+//    public static List<LocalTime[]> getPossibleMeetingTime(Calendar calendar1, Calendar calendar2){
+//
+//    }
 }
